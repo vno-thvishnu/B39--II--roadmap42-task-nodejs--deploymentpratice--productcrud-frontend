@@ -1,0 +1,58 @@
+import './App.css';
+import { useState } from 'react';
+import axios from 'axios';
+
+function App() {
+
+  const [data,setData]= useState("")
+  const [ product,setProduct]= useState([])
+  const [pName,setPname]= useState("")
+  const [pPrice,setPprice] = useState(0)
+
+  const getDashboardData = async () => {
+    const dashData = await axios.get("http://localhost:3006/dashboard")
+    setData(dashData.data.message)
+  }
+  const getServiceData = async() => {
+    const serviceData =await axios.get("http://localhost:3006/service")
+    setData(serviceData.data.message)
+  }
+  
+  const getProductData = async ()=>{
+    const productData= await axios.get("http://localhost:3006/products")
+  setProduct(productData.data)
+  }
+  const addProductData = async ()=>{
+    const addProduct = await axios.post("http://localhost:3006/create-product",{
+      name : pName,
+      price : pPrice
+    })
+    alert ("product Added")
+  }
+
+  return (
+    <div className="App">
+      <button onClick={getDashboardData}> Get Dashboard Data</button>
+      <button onClick={getServiceData}> Get Service Data</button>
+      <button onClick={getProductData}> Get product Data</button>
+     
+      <br/>
+      {data}
+      <br/>
+      <br/>
+      <input onClick={"text"}  value={pName} onChange={(e)=>setPname(e.target.value)}/>
+      <input onClick={"text"} value={pPrice} onChange={(e)=>setPprice(e.target.value)}/>
+      <button onClick={addProductData}>Add product</button>
+
+      <ul>
+        {
+          product.map((item)=>{
+            return <li>{item.name} - {item.price}</li>
+          })
+        }
+      </ul>
+    </div>
+  );
+}
+
+export default App;
